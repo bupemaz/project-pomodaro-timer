@@ -18,7 +18,7 @@ import Controls from "./Controls"
  * @returns
  *  new session state with timing information updated.
  */
-function nextTick(prevState) {
+ function nextTick(prevState) {
   const timeRemaining = Math.max(0, prevState.timeRemaining - 1);
   return {
     ...prevState,
@@ -60,39 +60,18 @@ function Pomodoro() {
   const [session, setSession] = useState(null);
 
   // ToDo: Allow the user to adjust the focus and break duration.
-   const [focusDuration, setFocusDuration] = useState(25)
-   const [breakDuration, setBreakDuration] = useState(5)
+  const [focusDuration, setFocusDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
 
-   const handleFocusDecrease = () => {
-    // handler to decrease focus if the focus duraction is more than 5 mins
-    setFocusDuration((currentDuration) => 
-    Math.max(5, currentDuration-5));
-  }
-
-  const handleFocusIncrease = () => {
-   // handler to increase focus if the focusduraction is less than 60 mins
-   setFocusDuration((currentDuration) => 
-   Math.min(60, currentDuration+5))
-  }
-
-  const handleBreakDecrease = () => {
-    // handler to decrease break if the break duraction is more than 5 mins
-   setBreakDuration((currentDuration) => 
-    Math.max(1, currentDuration-1));
-  }
-
-  const handleBreakIncrease = () => {
-   // handler to increase break if the break duration is less than 60 mins
-   setBreakDuration((currentDuration) => 
-   Math.min(15, currentDuration+1))
-  }
+  const increaseFocus = () => {setFocusDuration((prevDuration)=> prevDuration < 60 ? prevDuration + 5 : prevDuration)};
+  const increaseBreak = () => {setBreakDuration((prevDuration)=> prevDuration < 15 ? prevDuration+1 : prevDuration)};
+  const decreaseFocus = () => {setFocusDuration((prevDuration)=> prevDuration > 5 ? prevDuration-5 : prevDuration)};
+  const decreaseBreak = () => {setBreakDuration((prevDuration)=> prevDuration > 1 ? prevDuration-1 : prevDuration)};
 
   const stopSession = () => {
     setIsTimerRunning(false) 
     setSession(null)
   };
- 
-
   /**
    * Custom hook that invokes the callback function every second
    *
@@ -122,12 +101,13 @@ function Pomodoro() {
             return {
               label: "Focusing",
               timeRemaining: focusDuration * 60,
+              //keep track of session duration and time total and % complete (progressbar)
             };
           }
           return prevStateSession;
         });
       }
-      return nextState; //this is true or false if you are paused or pressing play 
+      return nextState;
     });
   }
 
@@ -135,13 +115,13 @@ function Pomodoro() {
     <div className="pomodoro">
       <div className="row">
         <div className="col">
-          <Duration session={session} duration={focusDuration} increaseDuration={handleFocusIncrease} 
-          decreaseDuration={handleFocusDecrease} isTimerRunning={isTimerRunning}/>
+          <Duration session={session} type="focus" duration={focusDuration} increaseDuration={increaseFocus} 
+          decreaseDuration={decreaseFocus} isTimerRunning={isTimerRunning}/>
         </div>
         <div className="col">
           <div className="float-right">
-            <Duration session={session} duration={breakDuration} increaseDuration={handleBreakIncrease} 
-            decreaseDuration={handleBreakDecrease} isTimerRunning={isTimerRunning}/>
+            <Duration session={session} type="break" duration={breakDuration} increaseDuration={increaseBreak} 
+            decreaseDuration={decreaseBreak} isTimerRunning={isTimerRunning}/>
           </div>
         </div>
       </div>
@@ -151,7 +131,6 @@ function Pomodoro() {
         <Session session={session} focusDuration={focusDuration} breakDuration={breakDuration} isTimerRunning={isTimerRunning}/>
     </div>
   );
-
 }
 
 export default Pomodoro;
