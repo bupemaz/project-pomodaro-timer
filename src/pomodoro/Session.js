@@ -1,42 +1,43 @@
 import React from "react"
+import {minutesToDuration, secondsToDuration} from "../utils/duration";
 import ProgressBar from "./ProgressBar"
 
-function Session({ session, focusDuration, breakDuration, isTimerRunning}) {
-  return ( <div>
-       {/* TODO: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
-       <div className="row mb-2 align-items-center">
-         <div className="col">
-           {/* TODO: Update message below to include current session (Focusing or On Break) total duration */}
-           {session 
-           ? <h2 data-testid="session-title">
-               {session.label === "Focusing"
-               ? `Focusing for ${focusDuration <10 ? `0${focusDuration}` : focusDuration}:00 minutes` 
-               : `On Break for ${breakDuration <10 ? `0${breakDuration}` : breakDuration}:00 minutes`}
-           </h2> : ""}
-           {/* TODO: Update message below correctly format the time remaining in the current session */}
-           {session 
-           ?<div>
-             <p className="lead" data-testid="session-sub-title">
-               {new Date(session.timeRemaining * 1000).toISOString().substr(14, 5)} remaining
-             </p>
-             {!isTimerRunning ? <h3>PAUSED</h3> : ""}
-           </div>
-           : ""}
-         </div>
-       </div>
-       <div className="row mb-2 align-items-center">
-         <div className="col">
-           {session 
-           ? session.label === "Focusing" 
-           ? <ProgressBar timeRemaining={session.timeRemaining} duration={focusDuration}/>
-           : <ProgressBar timeRemaining={session.timeRemaining} duration={breakDuration}/>
-           :""}
-         </div>
-       </div>
-     </div>
-  )
-}
+function Session({ session, focusDuration, breakDuration}) {
 
+  const duration = session?.label === "Focusing" ? focusDuration : breakDuration;
+  const totalTime = duration * 60;
 
+  return ( 
+   session && (
+   <div>
+       {/* TESTING: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
+       <div className="row mb-2">
+          <div className="col">
+            {/* TESTING: Update message below to include current session (Focusing or On Break) total duration */}
+            <h2 data-testid="session-title">
+              {/* {session?.label} for {session.label === "Focusing" ? minutesToDuration(focusDuration) : minutesToDuration(breakDuration)} */}
+                {session.label} for {minutesToDuration(duration)} minutes
+            </h2>
+            {/* TESTING: Update message below correctly format the time remaining in the current session */}
+            <p className="lead" data-testid="session-sub-title">
+              {secondsToDuration(session.timeRemaining)} remaining
+            </p>
+          </div>
+        </div>
+        <div className="row mb-2">
+          <div className="col"> 
+            
+            {/* ====================== progress bar ====================== */}
+            
+            <ProgressBar
+            currentTime={Math.abs(session.timeRemaining - duration * 60)}
+            totalTime={duration * 60}
+            />
+          </div>
+        </div>
+      </div>
+      )
+      );
+    }
 
-  export default Session;
+    export default Session;
