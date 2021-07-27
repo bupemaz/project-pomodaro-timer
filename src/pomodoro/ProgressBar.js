@@ -1,20 +1,20 @@
-import React from "react"
+import React from "react";
 
-function ProgressBar({ timeRemaining, duration }) {
-  return (<div className="progress" style={{ height: "20px" }}>
+
+function ProgressBar ({currentTime, totalTime}) {
+    const progress = (currentTime / totalTime) * 100;
+    return (
+            <div className="progress" style={{ height: "20px" }}>
               <div
-                  className="progress-bar"
-                  role="progressbar"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-valuenow={`${100-((timeRemaining/(duration* 60)) * 100) }`} // Increases aria-valuenow as elapsed time increases
-                  style={{ width: `${100-((timeRemaining/(duration* 60)) * 100) }%`}}// Increases width % as elapsed time increases
+                className="progress-bar"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow={progress} // Increases aria-valuenow as elapsed time increases
+                style={{ width: `${progress}%` }} // Increases width % as elapsed time increases
               />
-              
-  </div>)
+            </div>      
+    );
 }
-
-
-
 
 export default ProgressBar;
