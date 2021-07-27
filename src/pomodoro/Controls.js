@@ -7,7 +7,8 @@ function Controls({session, playPause, classNames, isTimerRunning, stopSession})
           className="btn-group btn-group-lg mb-2"
           role="group"
           aria-label="Timer controls"
-        >
+        >  {/* pause the current focus or break session */}
+        {/* sound alarm when current focus or break session is up  */}
           <button
             type="button"
             className="btn btn-primary"
@@ -23,8 +24,8 @@ function Controls({session, playPause, classNames, isTimerRunning, stopSession})
               })}
             />
           </button>
-          {/* TODO: Implement stopping the current focus or break session. and disable the stop button when there is no active session */}
-          {/* TODO: Disable the stop button when there is no active session */}
+          {/* Stop the current focus or break session */}
+          {/* Disable the stop button when there is no active session */}
           <button
             type="button"
             className="btn btn-secondary"

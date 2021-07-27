@@ -59,24 +59,27 @@ function Pomodoro() {
   // The current session - null where there is no session running
   const [session, setSession] = useState(null);
 
-  // ToDo: Allow the user to adjust the focus and break duration.
+  // Allow the user to adjust the focus and break duration.
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
 
-  const increaseFocus = () => {setFocusDuration((prevDuration)=> prevDuration < 60 ? prevDuration + 5 : prevDuration)};
-  const increaseBreak = () => {setBreakDuration((prevDuration)=> prevDuration < 15 ? prevDuration+1 : prevDuration)};
-  const decreaseFocus = () => {setFocusDuration((prevDuration)=> prevDuration > 5 ? prevDuration-5 : prevDuration)};
-  const decreaseBreak = () => {setBreakDuration((prevDuration)=> prevDuration > 1 ? prevDuration-1 : prevDuration)};
+   // Handlers
+   const minBreak = 1
+   const maxBreak = 15
+   const minFocus = 5
+   const maxFocus = 60
 
+  const increaseFocus = () =>  setFocusDuration((currentDuration) => Math.min(maxFocus, currentDuration + 5));
+  const increaseBreak = () =>  setBreakDuration((currentDuration) => Math.min(maxBreak, currentDuration + 1));
+  const decreaseFocus = () =>  setFocusDuration((currentDuration) => Math.max(minFocus, currentDuration - 5));
+  const decreaseBreak = () => setBreakDuration((currentDuration) => Math.max(minBreak, currentDuration - 1));
+
+// stops the current session 
   const stopSession = () => {
     setIsTimerRunning(false) 
     setSession(null)
   };
-  /**
-   * Custom hook that invokes the callback function every second
-   *
-   * NOTE: You will not need to make changes to the callback function
-   */
+  /* Custom hook that invokes the callback function every second */
   useInterval(() => {
       if (session.timeRemaining === 0) {
         new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
@@ -87,9 +90,7 @@ function Pomodoro() {
     isTimerRunning ? 1000 : null
   );
 
-  /**
-   * Called whenever the play/pause button is clicked.
-   */
+  /* Called whenever the play/pause button is clicked. */
   function playPause() {
     setIsTimerRunning((prevState) => {
       const nextState = !prevState;
@@ -128,7 +129,7 @@ function Pomodoro() {
       <div className="row">
         <Controls session={session} playPause={playPause} classNames={classNames} isTimerRunning={isTimerRunning} stopSession={stopSession}/>
       </div>
-        <Session session={session} focusDuration={focusDuration} breakDuration={breakDuration} isTimerRunning={isTimerRunning}/>
+        <Session session={session} focusDuration={focusDuration} breakDuration={breakDuration} />
     </div>
   );
 }
